@@ -23,7 +23,7 @@ public class Knight extends Piece {
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
 
-        for (int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) { // apply the offset to the current position
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) { // apply the offset to the current position
             final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
 
             if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
