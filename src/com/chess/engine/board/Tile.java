@@ -3,19 +3,18 @@ package com.chess.engine.board;
 import com.chess.engine.pieces.Piece;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Tile {
     protected int tileCoordinate;
-    protected static final int CHESS_BOARD = 64;
+    protected static final int NUM_TILE = 64;
     private static final Map<Integer, EmptyTile> EMPTY_TILE_CACHE = createAllPossibleEmptyTiles();
 
     private static Map<Integer, EmptyTile> createAllPossibleEmptyTiles() {
         final Map<Integer, EmptyTile> emptyTileMap = new HashMap<>();
 
-        for (int i = 0; i < CHESS_BOARD; i++) {
+        for (int i = 0; i < NUM_TILE; i++) {
             emptyTileMap.put(i, new EmptyTile(i));
         }
 
@@ -28,7 +27,7 @@ public abstract class Tile {
         return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILE_CACHE.get(tileCoordinate);
     }
 
-    private Tile(int tileCoordinate) {
+    private Tile(final int tileCoordinate) {
         this.tileCoordinate = tileCoordinate;
     }
 
@@ -55,7 +54,7 @@ public abstract class Tile {
     public static final class OccupiedTile extends Tile {
         private Piece pieceOnTile;
 
-        private OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
+        private OccupiedTile(int tileCoordinate, final Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile = pieceOnTile;
         }
