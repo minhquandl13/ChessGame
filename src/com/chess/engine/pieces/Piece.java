@@ -9,14 +9,21 @@ import java.util.*;
 public abstract class Piece {
     protected final int piecePosition;
     protected final Alliance pieceAlliance; // useful for piece and player
+    protected final boolean isFirstMove;
 
     public Piece(final int piecePosition, final Alliance pieceAlliance) {
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
+        //TODO (quan): more work to do here!!
+        isFirstMove = false;
     }
 
     public Alliance getPieceAlliance() {
         return this.pieceAlliance;
+    }
+
+    public boolean isFirstMove() {
+        return this.isFirstMove;
     }
 
     public abstract Collection<Move> calculateLegalMoves(final Board board);  // each Piece has different legal move

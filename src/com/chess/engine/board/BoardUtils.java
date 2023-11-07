@@ -8,6 +8,10 @@ public class BoardUtils {
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
     public static final boolean[] EIGHT_COLUMN = initColumn(7);
     public static final int NUM_TILE_PER_ROW = 0;
+    public static final boolean[] SECOND_ROW = null;
+    public static final boolean[] SEVENTH_ROW = null;
+
+
 
     private BoardUtils() {
         throw new RuntimeException("You cannot instance me");
