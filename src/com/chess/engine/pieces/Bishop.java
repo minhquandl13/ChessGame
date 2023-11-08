@@ -23,12 +23,14 @@ public class Bishop extends Piece {
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
 
+
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_COORDINATE_VECTOR) {
             int candidateDestinationCoordinate = this.piecePosition;
+            boolean isFirstColumnExclusion = isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset);
+            boolean isEighthColumnExclusion = isEighthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset);
 
             while (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)
-                        || isEighthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
+                if (isFirstColumnExclusion || isEighthColumnExclusion) {
                     break;
                 }
 
@@ -36,7 +38,7 @@ public class Bishop extends Piece {
 
                 if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
+                    if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();

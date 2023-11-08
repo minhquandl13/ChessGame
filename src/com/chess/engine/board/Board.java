@@ -10,13 +10,31 @@ import java.util.*;
 public class Board {
     // immutable List
     private final List<Tile> gameBoard;
-
+    private final Collection<Piece> whitePieces;
+    private final Collection<Piece> blackPieces;
     private Board(Builder builder) {
         this.gameBoard = createGameBoard(builder);
+        this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
+        this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
+    }
+
+    private Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+        final List<Piece> activePieces = new ArrayList<>();
+
+        for (final Tile tile : gameBoard) {
+            if (tile.isTileOccupied()) {
+                final Piece piece = tile.getPiece();
+                if (piece.getPieceAlliance() == alliance) {
+                    activePieces.add(piece);
+                }
+            }
+        }
+
+        return ImmutableList.copyOf(activePieces);
     }
 
     public Tile getTile(final int tileCoordinate) {
-        return null;
+        return gameBoard.get(tileCoordinate);
     }
 
     private static List<Tile> createGameBoard(final Builder builder) {
@@ -32,7 +50,7 @@ public class Board {
     // Create initial piece on board
     public static Board createStandardBoard() {
         final Builder builder = new Builder();
-        //black layout
+        // Black layout
         builder.setPiece(new Rook(Alliance.BLACK, 0));
         builder.setPiece(new Knight(Alliance.BLACK, 1));
         builder.setPiece(new Bishop(Alliance.BLACK, 2));
@@ -51,7 +69,6 @@ public class Board {
         builder.setPiece(new Pawn(Alliance.BLACK, 15));
 
         // White Layout
-
         builder.setPiece(new Rook(Alliance.WHITE, 48));
         builder.setPiece(new Knight(Alliance.WHITE, 49));
         builder.setPiece(new Bishop(Alliance.WHITE, 50));
@@ -69,8 +86,10 @@ public class Board {
         builder.setPiece(new Pawn(Alliance.WHITE, 62));
         builder.setPiece(new Pawn(Alliance.WHITE, 63));
 
+        // Set White to move first
+        builder.setMoveMaker(Alliance.WHITE);
 
-        return null;
+        return builder.build();
     }
 
     public static class Builder {

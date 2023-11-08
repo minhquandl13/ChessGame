@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.*;
 
+import static com.chess.engine.board.Move.*;
+
 public class Queen extends Piece {
     private final static int[] CANDIDATE_MOVE_COORDINATE_VECTOR = {-9, -8, -7, -1, 1, 7, 8, 9};
 
@@ -22,10 +24,11 @@ public class Queen extends Piece {
 
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_COORDINATE_VECTOR) {
             int candidateDestinationCoordinate = this.piecePosition;
+            boolean isFirstColumnExclusion = isFirstColumnExclusion(this.piecePosition, candidateCoordinateOffset);
+            boolean isEightColumnExclusion = isEighthColumnExclusion(this.piecePosition, candidateCoordinateOffset);
 
             while (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)
-                        || isEighthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
+                if (isFirstColumnExclusion || isEightColumnExclusion) {
                     break;
                 }
 
@@ -33,14 +36,14 @@ public class Queen extends Piece {
 
                 if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
-                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
+                    if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
+                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
 
                         if (this.pieceAlliance != pieceAlliance) { // enemy piece
-                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

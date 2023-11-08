@@ -26,9 +26,10 @@ public class King extends Piece {
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATE) {
             final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
             boolean isValidCoordinate = BoardUtils.isValidCoordinate(candidateDestinationCoordinate);
+            boolean isFirstColumnExclusion = isFirstColumnExclusion(this.piecePosition, currentCandidateOffset);
+            boolean isEighthColumnExclusion = isEighthColumnExclusion(this.piecePosition, currentCandidateOffset);
 
-            if (isFirstColumnExclusion(this.piecePosition, currentCandidateOffset)
-                    || isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
+            if (isFirstColumnExclusion || isEighthColumnExclusion) {
                 continue;
             }
 
