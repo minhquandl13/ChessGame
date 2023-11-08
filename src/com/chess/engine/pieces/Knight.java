@@ -25,17 +25,18 @@ public class Knight extends Piece {
 
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) { // apply the offset to the current position
             final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
+            boolean isFirstColumnExclusion = isFirstColumnExclusion(this.piecePosition, currentCandidateOffset);
+            boolean isSecondColumnExclusion = isSecondColumnExclusion(this.piecePosition, currentCandidateOffset);
+            boolean isSeventhColumnExclusion = isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset);
+            boolean isEightColumnExclusion = isEighthColumnExclusion(this.piecePosition, currentCandidateOffset);
 
             if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
-                        isSecondColumnExclusion(this.piecePosition, currentCandidateOffset) ||
-                        isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset) ||
-                        isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
+                if (isFirstColumnExclusion || isSecondColumnExclusion || isSeventhColumnExclusion || isEightColumnExclusion) {
                     continue;
                 }
 
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                if (candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
+                if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
                     legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                 } else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
