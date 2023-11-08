@@ -12,7 +12,7 @@ import java.util.*;
 public class Queen extends Piece {
     private final static int[] CANDIDATE_MOVE_COORDINATE_VECTOR = {-9, -8, -7, -1, 1, 7, 8, 9};
 
-    public Queen(final int piecePosition, final Alliance pieceAlliance) {
+    public Queen(final Alliance pieceAlliance, final int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 
