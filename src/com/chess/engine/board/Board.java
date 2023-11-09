@@ -12,6 +12,7 @@ public class Board {
     private final List<Tile> gameBoard;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
+
     private Board(Builder builder) {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
@@ -38,9 +39,9 @@ public class Board {
     }
 
     private static List<Tile> createGameBoard(final Builder builder) {
-        final Tile[] tiles = new Tile[BoardUtils.NUM_TILE];
+        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
 
-        for (int i = 0; i < BoardUtils.NUM_TILE; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
             tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
         }
 
@@ -69,22 +70,22 @@ public class Board {
         builder.setPiece(new Pawn(Alliance.BLACK, 15));
 
         // White Layout
-        builder.setPiece(new Rook(Alliance.WHITE, 48));
-        builder.setPiece(new Knight(Alliance.WHITE, 49));
-        builder.setPiece(new Bishop(Alliance.WHITE, 50));
-        builder.setPiece(new Queen(Alliance.WHITE, 51));
-        builder.setPiece(new King(Alliance.WHITE, 52));
-        builder.setPiece(new Bishop(Alliance.WHITE, 53));
-        builder.setPiece(new Knight(Alliance.WHITE, 54));
-        builder.setPiece(new Rook(Alliance.WHITE, 55));
-        builder.setPiece(new Pawn(Alliance.WHITE, 56));
-        builder.setPiece(new Pawn(Alliance.WHITE, 57));
-        builder.setPiece(new Pawn(Alliance.WHITE, 58));
-        builder.setPiece(new Pawn(Alliance.WHITE, 59));
-        builder.setPiece(new Pawn(Alliance.WHITE, 60));
-        builder.setPiece(new Pawn(Alliance.WHITE, 61));
-        builder.setPiece(new Pawn(Alliance.WHITE, 62));
-        builder.setPiece(new Pawn(Alliance.WHITE, 63));
+        builder.setPiece(new Rook(Alliance.WHITE, 56));
+        builder.setPiece(new Knight(Alliance.WHITE, 57));
+        builder.setPiece(new Bishop(Alliance.WHITE, 58));
+        builder.setPiece(new Queen(Alliance.WHITE, 59));
+        builder.setPiece(new King(Alliance.WHITE, 60));
+        builder.setPiece(new Bishop(Alliance.WHITE, 61));
+        builder.setPiece(new Knight(Alliance.WHITE, 62));
+        builder.setPiece(new Rook(Alliance.WHITE, 63));
+        builder.setPiece(new Pawn(Alliance.WHITE, 48));
+        builder.setPiece(new Pawn(Alliance.WHITE, 49));
+        builder.setPiece(new Pawn(Alliance.WHITE, 50));
+        builder.setPiece(new Pawn(Alliance.WHITE, 51));
+        builder.setPiece(new Pawn(Alliance.WHITE, 52));
+        builder.setPiece(new Pawn(Alliance.WHITE, 53));
+        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(new Pawn(Alliance.WHITE, 55));
 
         // Set White to move first
         builder.setMoveMaker(Alliance.WHITE);
