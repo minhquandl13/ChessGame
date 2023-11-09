@@ -23,7 +23,6 @@ public class Rook extends Piece {
 
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_COORDINATE_VECTOR) {
             int candidateDestinationCoordinate = this.piecePosition;
-            boolean isValidCoordinate = BoardUtils.isValidCoordinate(candidateDestinationCoordinate);
 
             while (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)
@@ -33,7 +32,7 @@ public class Rook extends Piece {
 
                 candidateDestinationCoordinate += candidateCoordinateOffset;
 
-                if (isValidCoordinate) {
+                if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
                         legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));

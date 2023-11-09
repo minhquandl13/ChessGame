@@ -48,7 +48,8 @@ public class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard,
+                                                           final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
 
         for (final Tile tile : gameBoard) {
@@ -59,7 +60,6 @@ public class Board {
                 }
             }
         }
-
         return ImmutableList.copyOf(activePieces);
     }
 
@@ -68,9 +68,9 @@ public class Board {
     }
 
     private static List<Tile> createGameBoard(final Builder builder) {
-        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES_PER_ROW];
+        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
 
-        for (int i = 0; i < BoardUtils.NUM_TILES_PER_ROW; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
             tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
         }
 
@@ -127,18 +127,17 @@ public class Board {
         Alliance nextMoveMaker;
 
         public Builder() {
-
+            this.boardConfig = new HashMap<>();
+            this.nextMoveMaker = Alliance.WHITE;
         }
 
         public Builder setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPiecePosition(), piece);
-
             return this;
         }
 
         public Builder setMoveMaker(final Alliance nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
-
             return this;
         }
 
