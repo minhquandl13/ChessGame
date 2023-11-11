@@ -5,11 +5,14 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.chess.engine.board.Move.*;
 
 public class BlackPlayer extends Player {
     public BlackPlayer(final Board board,
@@ -34,7 +37,8 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    protected Collection<Move> calculateKingCastle(Collection<Move> playerLegals, Collection<Move> opponentLegals) {
+    protected Collection<Move> calculateKingCastle(final Collection<Move> playerLegals,
+                                                   final Collection<Move> opponentLegals) {
         final List<Move> kingCastles = new ArrayList<>();
 
         if (this.playerKing.isFirstMove() && !this.isInCheck()) {
@@ -48,8 +52,8 @@ public class BlackPlayer extends Player {
                     if (Player.calculateAttackOnTile(5, opponentLegals).isEmpty()
                             && Player.calculateAttackOnTile(6, opponentLegals).isEmpty()
                             && rookTile.getPiece().getPieceType().isRook()) {
-                        // TODO(quan): ADD A CASTLE MOVE
-                        kingCastles.add(null);
+                        kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 6,
+                                (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 5));
                     }
                 }
             }
@@ -66,8 +70,8 @@ public class BlackPlayer extends Player {
                             && Player.calculateAttackOnTile(2, opponentLegals).isEmpty()
                             && Player.calculateAttackOnTile(1, opponentLegals).isEmpty()
                             && rookTile.getPiece().getPieceType().isRook()) {
-                        // TODO(quan): ADD A CASTLE MOVE
-                        kingCastles.add(null);
+                        kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 2, // king position when castle
+                                (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));  // rook position when castle
                     }
                 }
             }
