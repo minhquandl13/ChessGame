@@ -20,8 +20,8 @@ public class Pawn extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        boolean isSecondRow = BoardUtils.SECOND_ROW[this.piecePosition];
-        boolean isSeventhRow = BoardUtils.SEVENTH_ROW[this.piecePosition];
+        boolean isSecondRow = BoardUtils.SEVENTH_RANK[this.piecePosition];
+        boolean isSeventhRow = BoardUtils.SECOND_RANK[this.piecePosition];
         boolean isFirstColumn = BoardUtils.FIRST_COLUMN[this.piecePosition];
         boolean isEightColumn = BoardUtils.EIGHT_COLUMN[this.piecePosition];
 
