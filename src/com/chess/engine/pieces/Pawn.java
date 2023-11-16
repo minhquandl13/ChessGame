@@ -13,8 +13,15 @@ import static com.chess.engine.board.Move.*;
 public class Pawn extends Piece {
     private final static int[] CANDIDATE_MOVE_COORDINATE = {7, 8, 9, 16};
 
-    public Pawn(final Alliance pieceAlliance, final int piecePosition) {
-        super(PieceType.PAWN, piecePosition, pieceAlliance);
+    public Pawn(final Alliance pieceAlliance,
+                final int piecePosition) {
+        super(PieceType.PAWN, piecePosition, pieceAlliance, true);
+    }
+
+    public Pawn(final Alliance pieceAlliance,
+                final int piecePosition,
+                final boolean isFirstMove) {
+        super(PieceType.PAWN, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
@@ -51,7 +58,7 @@ public class Pawn extends Piece {
 
                         if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
                                 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                            legalMoves.add(new PawnJump(board, this, candidateDestinationCoordinate));
                         }
                     }
                 }
@@ -64,7 +71,7 @@ public class Pawn extends Piece {
 
                             if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
                                 // TODO (quan): more to do here's the case attacking into upon promotion
-                                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                                legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             }
                         }
                     }
@@ -80,7 +87,7 @@ public class Pawn extends Piece {
 
                             if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
                                 // TODO(quan): more to do here's the case attacking into upon promotion
-                                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                                legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             }
                         }
                     }

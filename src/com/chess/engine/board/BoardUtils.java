@@ -1,5 +1,7 @@
 package com.chess.engine.board;
 
+import java.util.Map;
+
 public class BoardUtils {
     public static final boolean[] FIRST_COLUMN = initColumn(0); // the first column in board is true, and all the remain is false
     public static final boolean[] SECOND_COLUMN = initColumn(1); // the second column in board is true, and all the remain is false
@@ -15,6 +17,8 @@ public class BoardUtils {
     public static final boolean[] THIRD_RANK = initRow(40);
     public static final boolean[] SECOND_RANK = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
+    public static final String[] ALGEBRAIC_POSITION = initializeAlgebraicNotation();
+    public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionCoordinateMap();
 
     private BoardUtils() {
         throw new RuntimeException("You cannot instance me");
@@ -44,5 +48,13 @@ public class BoardUtils {
 
     public static boolean isValidCoordinate(final int coordinate) {
         return coordinate >= 0 && coordinate < NUM_TILES;
+    }
+
+    public static int getCoordinateAtPosition(final String position) {
+        return POSITION_TO_COORDINATE.get(position);
+    }
+
+    public static int getPositionCoordinate(final int coordinate) {
+        return ALGEBREIC_POSITION(coordinate);
     }
 }

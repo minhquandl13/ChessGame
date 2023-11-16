@@ -6,6 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,12 +14,14 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
+
 
 import static com.chess.engine.board.Move.*;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -31,13 +34,15 @@ public class Table {
     private Tile sourceFile;
     private Tile destinationFile;
     private Piece humanMovedPiece;
+    private BoardDirection boardDirection;
+    private boolean highlightLegalsMove;
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     // FIXME: error link path
-    private static String defaultPieceImagesPath = "/plains/pieces/";
-    private Color lightTileColor = Color.decode("#FFFACD");
-    private Color darkTileColor = Color.decode("#593E1A");
+    private static final String defaultPieceImagesPath = "/plains/pieces/";
+    private final Color lightTileColor = Color.decode("#FFFACD");
+    private final Color darkTileColor = Color.decode("#593E1A");
 
     public Table() {
         this.gameFrame = new JFrame("Chess");
@@ -47,6 +52,8 @@ public class Table {
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         this.chessBoard = Board.createStandardBoard();
         this.boardPanel = new BoardPanel();
+        this.boardDirection = BoardDirection.NORMAL;
+        this.highlightLegalsMove = false;
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setLocationRelativeTo(null);
@@ -57,6 +64,8 @@ public class Table {
     private JMenuBar createTableMenuBar() {
         final JMenuBar tabMenuBar = new JMenuBar();
         tabMenuBar.add(createFileMenu());
+        tabMenuBar.add(createPreferenceMenu());
+
         return tabMenuBar;
     }
 
@@ -92,7 +101,7 @@ public class Table {
 
         public void drawBoard(final Board board) {
             removeAll();
-            for (final TilePanel tilePanel : boardTiles) {
+            for (final TilePanel tilePanel : boardDirection.traverse(boardTiles)) {
                 tilePanel.drawTile(board);
                 this.add(tilePanel);
             }
@@ -112,6 +121,7 @@ public class Table {
             setPreferredSize(TILE_PANEL_DIMENSION);
             assignTileColour();
             assignTilePieceIcon(chessBoard);
+//            highLightLegals(chessBoard);
 
             addMouseListener(new MouseListener() {
                 @Override
@@ -172,7 +182,6 @@ public class Table {
                 }
             });
 
-
             validate();
         }
 
@@ -205,6 +214,30 @@ public class Table {
             }
         }
 
+        private void highLightLegals(final Board board) {
+            if (highlightLegalsMove) {
+                for (final Move move : pieceLegalMoves(board)) {
+                    if (move.getDestinationCoordinate() == this.tileId) {
+                        try {
+                            File filePath = new File("/misc/green_dot.png");
+                            JLabel highLightLegalsMove = new JLabel(new ImageIcon((ImageIO.read(filePath))));
+                            this.add(highLightLegalsMove);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        private Collection<Move> pieceLegalMoves(final Board board) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
+                return humanMovedPiece.calculateLegalMoves(board);
+            }
+
+            return Collections.emptyList();
+        }
+
         private void assignTileColour() {
             if (BoardUtils.EIGHTH_RANK[this.tileId]
                     || BoardUtils.SIXTH_RANK[this.tileId]
@@ -218,5 +251,50 @@ public class Table {
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
             }
         }
+    }
+
+    private JMenu createPreferenceMenu() {
+        final JMenu preferenceMenu = new JMenu("Preferences");
+        final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
+        flipBoardMenuItem.addActionListener(e -> {
+            boardDirection = boardDirection.opposite();
+            boardPanel.drawBoard(chessBoard);
+        });
+        preferenceMenu.add(flipBoardMenuItem);
+        preferenceMenu.addSeparator();
+        final JCheckBoxMenuItem legalMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight legal move", false);
+        legalMoveHighlighterCheckbox.addActionListener(e -> highlightLegalsMove = legalMoveHighlighterCheckbox.isSelected());
+        preferenceMenu.add(legalMoveHighlighterCheckbox);
+
+        return preferenceMenu;
+    }
+
+    public enum BoardDirection {
+        NORMAL {
+            @Override
+            List<TilePanel> traverse(List<TilePanel> boardTiles) {
+                return boardTiles;
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return FLIPPED;
+            }
+        },
+        FLIPPED {
+            @Override
+            List<TilePanel> traverse(List<TilePanel> boardTiles) {
+                return Lists.reverse(boardTiles);
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return NORMAL;
+            }
+        };
+
+        abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
+
+        abstract BoardDirection opposite();
     }
 }
