@@ -54,14 +54,14 @@ public abstract class Player {
     }
 
     public boolean isMoveLegal(final Move move) {
-        return this.legalMoves.contains(move);
+        return /*move != null && move.getMovedPiece() != null &&*/ this.legalMoves.contains(move);
     }
 
     public boolean isInCheck() {
         return this.isInCheck;
     }
 
-    public boolean isCheckMate() {
+    public boolean isInCheckMate() {
         return this.isInCheck && !hasEscapeMoves();
     }
 

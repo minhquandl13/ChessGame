@@ -24,6 +24,7 @@ public class Pawn extends Piece {
         super(PieceType.PAWN, piecePosition, pieceAlliance, isFirstMove);
     }
 
+
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -62,6 +63,7 @@ public class Pawn extends Piece {
                         }
                     }
                 }
+
 
                 case 7 -> {
                     if (!(isEightColumn && this.pieceAlliance.isWhite()

@@ -59,9 +59,9 @@ public class TakenPiecesPanel extends JPanel {
             }
         }
 
-        Collections.sort(whiteTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        whiteTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
-        Collections.sort(blackTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        blackTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
         pieceForWhite(whiteTakenPieces);
         pieceForBlack(blackTakenPieces);
@@ -69,6 +69,7 @@ public class TakenPiecesPanel extends JPanel {
         validate();
     }
 
+    // FIXME:
     private void pieceForWhite(List<Piece> whiteTakenPieces) {
         for (final Piece takenPiece : whiteTakenPieces) {
             try {

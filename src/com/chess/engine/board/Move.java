@@ -37,10 +37,13 @@ public abstract class Move {
 
         if (!(other instanceof Move otherMove)) return false;
 
+        Piece thisMovedPiece = getMovedPiece();
+        Piece otherMovedPiece = otherMove.getMovedPiece();
 
         return getCurrentCoordinate() == otherMove.getCurrentCoordinate()
                 && getDestinationCoordinate() == otherMove.getDestinationCoordinate()
-                && getMovedPiece().equals(otherMove.getMovedPiece());
+                && thisMovedPiece != null
+                && thisMovedPiece.equals(otherMovedPiece);
     }
 
     @Override
@@ -48,8 +51,8 @@ public abstract class Move {
         final int prime = 31;
         int result = 1;
         result = prime * result + this.destinationCoordinate;
-        result = prime * result + this.movedPiece.hashCode();
-        result = prime * result + this.movedPiece.getPiecePosition();
+        result = prime * result + (this.movedPiece == null ? 0 : this.movedPiece.hashCode());
+        result = prime * result + (this.movedPiece == null ? 0 : this.movedPiece.getPiecePosition());
 
         return result;
     }
@@ -92,11 +95,17 @@ public abstract class Move {
             builder.setPiece(piece);
         }
 
-        // move the moved piece
-        builder.setPiece(this.movedPiece.movePiece(this));
+        final Pawn movedPawn = (Pawn) this.movedPiece.movePiece(this);
+        builder.setPiece(movedPawn);
+        builder.setEnPassantPawn(movedPawn);
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
 
         return builder.build();
+    }
+
+    @Override
+    public String toString() {
+        return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
     }
 
     public static final class MajorMove extends Move {
@@ -108,7 +117,16 @@ public abstract class Move {
 
         @Override
         public boolean equals(final Object other) {
-            return this == other || other instanceof MajorMove && super.equals(other);
+            var isEqual = this == other || other instanceof MajorMove && super.equals(other);
+            if (isEqual) {
+                System.out.println("Quan co: " + getMovedPiece());
+                System.out.println("Vi tri hien tai: " + this.getCurrentCoordinate());
+                System.out.println("Vi tri den: " + this.getDestinationCoordinate());
+                System.out.println("\n");
+            }
+
+            return isEqual;
+//            return this == other || other instanceof MajorMove && super.equals(other);
         }
 
         @Override
