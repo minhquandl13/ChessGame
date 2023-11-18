@@ -38,10 +38,11 @@ public class Table {
     private Tile destinationFile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
-    private boolean highlightLegalsMove;
+    private boolean highlightLegalMove;
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
+    private static final Table INSTANCE = new Table();
     // FIXME: error link path
     private static final String defaultPieceImagesPath = "/plains/pieces/";
     private final Color lightTileColor = Color.decode("#FFFACD");
@@ -59,7 +60,7 @@ public class Table {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.boardDirection = BoardDirection.NORMAL;
-        this.highlightLegalsMove = false;
+        this.highlightLegalMove = false;
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
@@ -68,6 +69,42 @@ public class Table {
         this.gameFrame.setLocationRelativeTo(null);
         this.gameFrame.setResizable(false);
         this.gameFrame.setVisible(true);
+    }
+
+    public static Table get() {
+        return INSTANCE;
+    }
+
+    private Board getGameBoard() {
+        return this.chessBoard;
+    }
+
+    private MoveLog getMoveLog() {
+        return this.moveLog;
+    }
+
+    private BoardPanel getBoardPanel() {
+        return this.boardPanel;
+    }
+
+    private GameHistoryPanel getGameHistoryPanel() {
+        return this.gameHistoryPanel;
+    }
+
+    private TakenPiecesPanel getTakenPiecesPanel() {
+        return this.takenPiecesPanel;
+    }
+
+    private boolean getHighlightLegalMoves() {
+        return this.highlightLegalMove;
+    }
+
+    public void show() {
+        Table.get().getMoveLog().clear();
+        Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
+        Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
+        Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+//        Table.get().getDebugPanel().redo();
     }
 
     private JMenuBar createTableMenuBar() {
@@ -268,7 +305,7 @@ public class Table {
         }
 
         private void highLightLegals(final Board board) {
-            if (highlightLegalsMove) {
+            if (highlightLegalMove) {
                 for (final Move move : pieceLegalMoves(board)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
@@ -315,8 +352,9 @@ public class Table {
         });
         preferenceMenu.add(flipBoardMenuItem);
         preferenceMenu.addSeparator();
+
         final JCheckBoxMenuItem legalMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight legal move", false);
-        legalMoveHighlighterCheckbox.addActionListener(e -> highlightLegalsMove = legalMoveHighlighterCheckbox.isSelected());
+        legalMoveHighlighterCheckbox.addActionListener(e -> highlightLegalMove = legalMoveHighlighterCheckbox.isSelected());
         preferenceMenu.add(legalMoveHighlighterCheckbox);
 
         return preferenceMenu;
