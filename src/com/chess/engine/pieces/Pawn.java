@@ -11,7 +11,7 @@ import java.util.*;
 import static com.chess.engine.board.Move.*;
 
 public class Pawn extends Piece {
-    private final static int[] CANDIDATE_MOVE_COORDINATE = {7, 8, 9, 16};
+    private final static int[] CANDIDATE_MOVE_COORDINATE = {8, 16, 7, 9};
 
     public Pawn(final Alliance pieceAlliance,
                 final int piecePosition) {
@@ -28,10 +28,12 @@ public class Pawn extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        boolean isSecondRow = BoardUtils.SEVENTH_RANK[this.piecePosition];
-        boolean isSeventhRow = BoardUtils.SECOND_RANK[this.piecePosition];
+        boolean isSecondRank = BoardUtils.SEVENTH_RANK[this.piecePosition];
+        boolean isSeventhRank = BoardUtils.SECOND_RANK[this.piecePosition];
         boolean isFirstColumn = BoardUtils.FIRST_COLUMN[this.piecePosition];
         boolean isEightColumn = BoardUtils.EIGHT_COLUMN[this.piecePosition];
+        boolean isBlack = this.getPieceAlliance().isBlack();
+        boolean isWhite = this.getPieceAlliance().isWhite();
 
 
         // BLACK apply -8, WHITE apply 8
@@ -46,14 +48,14 @@ public class Pawn extends Piece {
                 case 8 -> {
                     if (!board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                         // TODO: more work to do here (deal with promotion)!!
-                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                        legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
                     }
                 }
 
                 case 16 -> {
                     if (this.isFirstMove()
-                            && (isSecondRow && this.getPieceAlliance().isBlack())
-                            || (isSeventhRow && this.getPieceAlliance().isWhite())) {
+                            && (isSecondRank && isBlack)
+                            || (isSeventhRank && isWhite)) {
 
                         final int behindCandidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
 
@@ -64,10 +66,9 @@ public class Pawn extends Piece {
                     }
                 }
 
-
                 case 7 -> {
-                    if (!(isEightColumn && this.pieceAlliance.isWhite()
-                            || isFirstColumn && this.pieceAlliance.isBlack())) {
+                    if (!(isEightColumn && isWhite
+                            || isFirstColumn && isBlack)) {
                         if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                             final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 
@@ -75,21 +76,34 @@ public class Pawn extends Piece {
                                 // TODO (quan): more to do here's the case attacking into upon promotion
                                 legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             }
+                        } else if (board.getEnPassantPawn() != null) { // if enemy pawn next to your pawn then you can take
+                            if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
+                                final Piece pieceOnCandidate = board.getEnPassantPawn();
+
+                                if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                                    legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                }
+                            }
                         }
                     }
                 }
 
                 case 9 -> {
-                    boolean isBlack = this.pieceAlliance.isBlack();
-                    boolean isWhite = this.pieceAlliance.isWhite();
-
-                    if ((isFirstColumn && isWhite) || (isEightColumn && isBlack)) {
+                    if (!(isFirstColumn && isWhite || (isEightColumn && isBlack))) {
                         if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                             final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 
                             if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
                                 // TODO(quan): more to do here's the case attacking into upon promotion
                                 legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                            }
+                        } else if (board.getEnPassantPawn() != null) { // if enemy pawn next to your pawn then you can take
+                            if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (this.pieceAlliance.getOppositeDirection()))) {
+                                final Piece pieceOnCandidate = board.getEnPassantPawn();
+
+                                if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                                    legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                }
                             }
                         }
                     }

@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.*;
 
+import static com.chess.engine.board.Move.*;
+
 public class Rook extends Piece {
     // These are offsets with respect to our current position
     private final static int[] CANDIDATE_MOVE_COORDINATE_VECTOR = {-8, -1, 1, 8};
@@ -42,13 +44,13 @@ public class Rook extends Piece {
                 if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
-                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
+                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
 
                         if (this.pieceAlliance != pieceAlliance) { // enemy piece
-                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

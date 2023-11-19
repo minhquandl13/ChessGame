@@ -1,5 +1,8 @@
 package com.chess.engine.board;
 
+import com.chess.engine.pieces.King;
+import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
@@ -79,6 +82,25 @@ public class BoardUtils {
     public int getCoordinateAtPosition(final String position) {
         return POSITION_TO_COORDINATE.get(position);
     }
+
+    public static boolean isThreatenedBoardImmediate(final Board board) {
+        return board.whitePlayer().isInCheck() || board.blackPlayer().isInCheck();
+    }
+
+//    public static boolean kingThreat(final Move move) {
+//        final Board board = move.getBoard();
+//        final MoveTransition transition = board.currentPlayer().makeMove(move);
+//        return transition.getToBoard().currentPlayer().isInCheck();
+//    }
+
+//    public static boolean isKingPawnTrap(final Board board,
+//                                         final King king,
+//                                         final int frontTile) {
+//        final Piece piece = board.getPiece(frontTile);
+//        return piece != null &&
+//                piece.getPieceType() == Piece.PieceType.PAWN &&
+//                piece.getPieceAlliance() != king.getPieceAlliance();
+//    }
 
     public static String getPositionAtCoordinate(final int coordinate) {
         return ALGEBRAIC_NOTATION.get(coordinate);

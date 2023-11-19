@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -34,8 +33,8 @@ public class Table {
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
     private Board chessBoard;
-    private Tile sourceFile;
-    private Tile destinationFile;
+    private Tile sourceTile;
+    private Tile destinationTile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean highlightLegalMove;
@@ -113,6 +112,15 @@ public class Table {
         tabMenuBar.add(createPreferenceMenu());
 
         return tabMenuBar;
+    }
+
+    private static void center(final JFrame frame) {
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final int w = frame.getSize().width;
+        final int h = frame.getSize().height;
+        final int x = (dim.width - w) / 2;
+        final int y = (dim.height - h) / 2;
+        frame.setLocation(x, y);
     }
 
     private JMenu createFileMenu() {
@@ -199,7 +207,7 @@ public class Table {
             setPreferredSize(TILE_PANEL_DIMENSION);
             assignTileColour();
             assignTilePieceIcon(chessBoard);
-            highLightLegals(chessBoard);
+            highlightTileBorder(chessBoard);
             mouseEvent(boardPanel, tileId);
             validate();
         }
@@ -209,19 +217,19 @@ public class Table {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (isRightMouseButton(e)) {
-                        sourceFile = null;
-                        destinationFile = null;
+                        sourceTile = null;
+                        destinationTile = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
-                        if (sourceFile == null) {
-                            sourceFile = chessBoard.getTile(tileId);
-                            humanMovedPiece = sourceFile.getPiece();
+                        if (sourceTile == null) {
+                            sourceTile = chessBoard.getTile(tileId);
+                            humanMovedPiece = sourceTile.getPiece();
                             if (humanMovedPiece == null) {
-                                sourceFile = null;
+                                sourceTile = null;
                             }
                         } else {
-                            destinationFile = chessBoard.getTile(tileId);
-                            final Move move = MoveFactory.createMove(chessBoard, sourceFile.getTileCoordinate(), destinationFile.getTileCoordinate());
+                            destinationTile = chessBoard.getTile(tileId);
+                            final Move move = MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
 
                             if (transition.getMoveStatus().isDone()) {
@@ -235,19 +243,15 @@ public class Table {
                                 moveLog.addMove(move);
                             }
 
-                            sourceFile = null;
-                            destinationFile = null;
+                            sourceTile = null;
+                            destinationTile = null;
                             humanMovedPiece = null;
                         }
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
-                                takenPiecesPanel.redo(moveLog);
-                                boardPanel.drawBoard(chessBoard);
-
-                            }
+                        SwingUtilities.invokeLater(() -> {
+                            gameHistoryPanel.redo(chessBoard, moveLog);
+                            takenPiecesPanel.redo(moveLog);
+                            boardPanel.drawBoard(chessBoard);
                         });
                     }
                 }
@@ -277,7 +281,8 @@ public class Table {
         public void drawTile(final Board board) {
             assignTileColour();
             assignTilePieceIcon(board);
-            highLightLegals(chessBoard);
+            highlightTileBorder(board);
+            highlightLegals(board);
             validate();
             repaint();
         }
@@ -304,15 +309,28 @@ public class Table {
             }
         }
 
-        private void highLightLegals(final Board board) {
-            if (highlightLegalMove) {
+        private void highlightTileBorder(final Board board) {
+            if (humanMovedPiece != null
+                    && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()
+                    && humanMovedPiece.getPiecePosition() == this.tileId) {
+                setBorder(BorderFactory.createLineBorder(Color.cyan));
+            } else {
+                setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        }
+
+        // FIXME
+        private void highlightLegals(final Board board) {
+            if (Table.get().getHighlightLegalMoves()) {
                 for (final Move move : pieceLegalMoves(board)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
-                            File filePath = new File("/misc/green_dot.png");
-                            JLabel highLightLegalsMove = new JLabel(new ImageIcon((ImageIO.read(filePath))));
-                            this.add(highLightLegalsMove);
-                        } catch (Exception e) {
+                            var filePath = "/misc/green_dot.png";
+
+                            var fileUrl = new URL(URLDecoder.decode(filePath, StandardCharsets.UTF_8));
+                            final BufferedImage image = ImageIO.read(fileUrl);
+                            this.add(new JLabel(new ImageIcon(image)));
+                        } catch (final IOException e) {
                             e.printStackTrace();
                         }
                     }

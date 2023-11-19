@@ -24,3 +24,4 @@ public class MoveTransition {
         return this.transitionBoard;
     }
 }
+

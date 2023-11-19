@@ -8,7 +8,6 @@ import java.util.*;
 
 public abstract class Piece {
     protected final PieceType pieceType;
-
     protected final int piecePosition;
     protected final Alliance pieceAlliance; // useful for piece and player
     protected final boolean isFirstMove;
