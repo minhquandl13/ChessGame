@@ -28,10 +28,10 @@ public class Pawn extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        boolean isSecondRank = BoardUtils.SEVENTH_RANK[this.piecePosition];
-        boolean isSeventhRank = BoardUtils.SECOND_RANK[this.piecePosition];
+        boolean isSecondRow = BoardUtils.SEVENTH_ROW[this.piecePosition];
+        boolean isSeventhRow = BoardUtils.SECOND_ROW[this.piecePosition];
         boolean isFirstColumn = BoardUtils.FIRST_COLUMN[this.piecePosition];
-        boolean isEightColumn = BoardUtils.EIGHT_COLUMN[this.piecePosition];
+        boolean isEightColumn = BoardUtils.EIGHTH_COLUMN[this.piecePosition];
         boolean isBlack = this.getPieceAlliance().isBlack();
         boolean isWhite = this.getPieceAlliance().isWhite();
 
@@ -40,7 +40,7 @@ public class Pawn extends Piece {
         for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATE) {
             final int candidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.getDirection() * currentCandidateOffset);
 
-            if (!BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
+            if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 continue;
             }
 
@@ -53,14 +53,12 @@ public class Pawn extends Piece {
                 }
 
                 case 16 -> {
-                    if (this.isFirstMove()
-                            && (isSecondRank && isBlack)
-                            || (isSeventhRank && isWhite)) {
-
+                    if (this.isFirstMove() &&
+                            ((BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isBlack())
+                                    || (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()))) {
                         final int behindCandidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
-
-                        if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
-                                && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+                        if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied() &&
+                                !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                             legalMoves.add(new PawnJump(board, this, candidateDestinationCoordinate));
                         }
                     }
@@ -109,44 +107,54 @@ public class Pawn extends Piece {
                     }
                 }
             }
+        }
 
-//            if (currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-//                //TODO (quan): more work to do here(deal with promotion)!!
-//                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-//            } else if (currentCandidateOffset == 16 && this.isFirstMove()
-//                    && (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isBlack())
-//                    || BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()) {
-//                final int behindCandidateDestinationCoordinate = this.piecePosition
-//                        + (this.pieceAlliance.getDirection() * 8);
+
+//        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATE) {
+//            final int candidateDestinationCoordinate = this.piecePosition + (this.getPieceAlliance().getDirection()
+//                    * currentCandidateOffset);
 //
-//                if (board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
-//                        && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+//            if (!BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
+//                continue;
+//            }
+//            if (currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+//                //TODO more work to do here (deal with promotions)
+//                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+//            } else if (currentCandidateOffset == 16 && this.isFirstMove() &&
+//                    ((BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
+//                            (BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()))) {
+//
+//                final int behindCandidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.getDirection() * 8);
+//                if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied() &&
+//                        !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
+//
 //                    legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
 //                }
-//            } else if (currentCandidateOffset == 7
-//                    && !((BoardUtils.EIGHT_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite()
-//                    || BoardUtils.FIRST_COLUMN[this.piecePosition]) && this.pieceAlliance.isBlack())) {
+//
+//            } else if (currentCandidateOffset == 7 &&
+//                    !(BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
+//                            BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())) {
 //                if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
 //                    final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 //
 //                    if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-//                        //TODO (quan): more to do here's the case attacking into upon promotion
 //                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
 //                    }
 //                }
-//            } else if (currentCandidateOffset == 9
-//                    && !((BoardUtils.FIRST_COLUMN[this.piecePosition]) && this.pieceAlliance.isWhite()
-//                    || BoardUtils.EIGHT_COLUMN[this.piecePosition]) && this.pieceAlliance.isBlack()) {
+//
+//            } else if (currentCandidateOffset == 9 &&
+//                    !(BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
+//                            BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())) {
+//
 //                if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
 //                    final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 //
 //                    if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-//                        //TODO (quan): more to do here's the case attacking into upon promotion
 //                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
 //                    }
 //                }
 //            }
-        }
+//        }
 
         return ImmutableList.copyOf(legalMoves);
     }

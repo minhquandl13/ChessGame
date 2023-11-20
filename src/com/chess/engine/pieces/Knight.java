@@ -37,7 +37,7 @@ public class Knight extends Piece {
             boolean isSeventhColumnExclusion = isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset);
             boolean isEightColumnExclusion = isEighthColumnExclusion(this.piecePosition, currentCandidateOffset);
 
-            if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
+            if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion || isSecondColumnExclusion
                         || isSeventhColumnExclusion || isEightColumnExclusion) {
                     continue;
@@ -91,7 +91,7 @@ public class Knight extends Piece {
     }
 
     private static boolean isEighthColumnExclusion(final int currentPosition, final int candidateOffset) {
-        return BoardUtils.EIGHT_COLUMN[currentPosition]
+        return BoardUtils.EIGHTH_COLUMN[currentPosition]
                 && (candidateOffset == -15
                 || candidateOffset == -6
                 || candidateOffset == 10

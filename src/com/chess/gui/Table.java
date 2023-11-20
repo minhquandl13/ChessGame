@@ -320,6 +320,24 @@ public class Table {
         }
 
         // FIXME
+//        private void highlightLegals(final Board board) {
+//            if (Table.get().getHighlightLegalMoves()) {
+//                for (final Move move : pieceLegalMoves(board)) {
+//                    if (move.getDestinationCoordinate() == this.tileId) {
+//                        try {
+//                            var filePath = "/misc/green_dot.png";
+//
+//                            var fileUrl = new URL(URLDecoder.decode(filePath, StandardCharsets.UTF_8));
+//                            final BufferedImage image = ImageIO.read(fileUrl);
+//                            this.add(new JLabel(new ImageIcon(image)));
+//                        } catch (final IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
         private void highlightLegals(final Board board) {
             if (Table.get().getHighlightLegalMoves()) {
                 for (final Move move : pieceLegalMoves(board)) {
@@ -327,9 +345,15 @@ public class Table {
                         try {
                             var filePath = "/misc/green_dot.png";
 
-                            var fileUrl = new URL(URLDecoder.decode(filePath, StandardCharsets.UTF_8));
-                            final BufferedImage image = ImageIO.read(fileUrl);
-                            this.add(new JLabel(new ImageIcon(image)));
+                            // Use getResource to obtain the resource URL
+                            var fileUrl = getClass().getResource(filePath);
+
+                            if (fileUrl != null) {
+                                final BufferedImage image = ImageIO.read(fileUrl);
+                                this.add(new JLabel(new ImageIcon(image)));
+                            } else {
+                                System.err.println("Resource not found: " + filePath);
+                            }
                         } catch (final IOException e) {
                             e.printStackTrace();
                         }
@@ -350,9 +374,9 @@ public class Table {
             if (BoardUtils.EIGHTH_RANK[this.tileId]
                     || BoardUtils.SIXTH_RANK[this.tileId]
                     || BoardUtils.FOURTH_RANK[this.tileId]
-                    || BoardUtils.SECOND_RANK[this.tileId]) {
+                    || BoardUtils.SECOND_ROW[this.tileId]) {
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            } else if (BoardUtils.SEVENTH_RANK[this.tileId]
+            } else if (BoardUtils.SEVENTH_ROW[this.tileId]
                     || BoardUtils.FIFTH_RANK[this.tileId]
                     || BoardUtils.THIRD_RANK[this.tileId]
                     || BoardUtils.FIRST_RANK[this.tileId]) {

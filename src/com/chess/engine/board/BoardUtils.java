@@ -1,11 +1,7 @@
 package com.chess.engine.board;
 
-import com.chess.engine.pieces.King;
-import com.chess.engine.pieces.Piece;
-import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +10,14 @@ public class BoardUtils {
     public static final boolean[] FIRST_COLUMN = initColumn(0); // the first column in board is true, and all the remain is false
     public static final boolean[] SECOND_COLUMN = initColumn(1); // the second column in board is true, and all the remain is false
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
-    public static final boolean[] EIGHT_COLUMN = initColumn(7);
+    public static final boolean[] EIGHTH_COLUMN = initColumn(7);
     public static final boolean[] EIGHTH_RANK = initRow(0);
-    public static final boolean[] SEVENTH_RANK = initRow(8);
+    public static final boolean[] SEVENTH_ROW = initRow(8);
     public static final boolean[] SIXTH_RANK = initRow(16);
     public static final boolean[] FIFTH_RANK = initRow(24);
     public static final boolean[] FOURTH_RANK = initRow(32);
     public static final boolean[] THIRD_RANK = initRow(40);
-    public static final boolean[] SECOND_RANK = initRow(48);
+    public static final boolean[] SECOND_ROW = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
     public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     public final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
@@ -75,7 +71,7 @@ public class BoardUtils {
                 "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1");
     }
 
-    public static boolean isValidCoordinate(final int coordinate) {
+    public static boolean isValidTileCoordinate(final int coordinate) {
         return coordinate >= START_TILE_INDEX && coordinate < NUM_TILES;
     }
 

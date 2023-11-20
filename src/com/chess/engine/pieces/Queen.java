@@ -25,31 +25,31 @@ public class Queen extends Piece {
         super(PieceType.QUEEN, piecePosition, pieceAlliance, isFirstMove);
     }
 
+    // FIXME: diagonal has problem
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_COORDINATE_VECTOR) {
             int candidateDestinationCoordinate = this.piecePosition;
-            boolean isFirstColumnExclusion = isFirstColumnExclusion(this.piecePosition, candidateCoordinateOffset);
-            boolean isEightColumnExclusion = isEighthColumnExclusion(this.piecePosition, candidateCoordinateOffset);
 
-            while (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion || isEightColumnExclusion) {
+            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
+                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)
+                        || isEighthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
                     break;
                 }
 
                 candidateDestinationCoordinate += candidateCoordinateOffset;
 
-                if (BoardUtils.isValidCoordinate(candidateDestinationCoordinate)) {
+                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) { // not occupied then add sort of a non-atacking legal move
+
+                    if (!candidateDestinationTile.isTileOccupied()) {
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-
-                        if (this.pieceAlliance != pieceAlliance) { // enemy piece
+                        if (this.pieceAlliance != pieceAlliance) {
                             legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
@@ -79,7 +79,7 @@ public class Queen extends Piece {
     }
 
     private static boolean isEighthColumnExclusion(final int currentPosition, final int candidateOffset) {
-        return BoardUtils.EIGHT_COLUMN[currentPosition]
+        return BoardUtils.EIGHTH_COLUMN[currentPosition]
                 && (candidateOffset == -7
                 || candidateOffset == 1
                 || candidateOffset == 9);
