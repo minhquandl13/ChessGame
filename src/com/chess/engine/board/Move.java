@@ -236,21 +236,19 @@ public abstract class Move {
 
         @Override
         public Board execute() {
-            final Builder builder = new Builder();
-            for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
-                if (!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-
-            for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                if (!piece.equals(this.getAttackedPiece())) {
-                    builder.setPiece(piece);
-                }
-            }
+            final Board.Builder builder = new Builder();
+            this.board.currentPlayer().getActivePieces()
+                    .stream()
+                    .filter(piece -> !this.movedPiece.equals(piece))
+                    .forEach(builder::setPiece);
+            this.board.currentPlayer().getOpponent().getActivePieces()
+                    .stream()
+                    .filter(piece -> !piece.equals(this.getAttackedPiece()))
+                    .forEach(builder::setPiece);
 
             builder.setPiece(this.movedPiece.movePiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            builder.setMoveTransition(this);
 
             return builder.build();
         }
@@ -324,7 +322,8 @@ public abstract class Move {
         public Board execute() {
             final Builder builder = new Builder();
             this.board.currentPlayer().getActivePieces()
-                    .stream().filter(piece -> !this.movedPiece.equals(piece))
+                    .stream()
+                    .filter(piece -> !this.movedPiece.equals(piece))
                     .forEach(builder::setPiece);
 
             this.board.currentPlayer().getOpponent().getActivePieces()
