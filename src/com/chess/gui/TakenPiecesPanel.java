@@ -73,12 +73,21 @@ public class TakenPiecesPanel extends JPanel {
     private void pieceForWhite(List<Piece> whiteTakenPieces) {
         for (final Piece takenPiece : whiteTakenPieces) {
             try {
-                final BufferedImage image = ImageIO.read(new File("/plains/pieces" +
-                        takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()));
+                String imagePath = "/plains/pieces/" +
+                        takenPiece.getPieceAlliance().toString().charAt(0) +
+                        takenPiece + ".gif";
 
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
-                this.southPanel.add(imageLabel);
+                // Use getResource to obtain the resource URL
+                var fileUrl = getClass().getResource(imagePath);
+
+                if (fileUrl != null) {
+                    final BufferedImage image = ImageIO.read(fileUrl);
+                    final ImageIcon icon = new ImageIcon(image);
+                    final JLabel imageLabel = new JLabel(icon);
+                    this.southPanel.add(imageLabel);
+                } else {
+                    System.err.println("Resource not found: " + imagePath);
+                }
             } catch (final IOException e) {
                 e.printStackTrace();
             }
@@ -88,12 +97,21 @@ public class TakenPiecesPanel extends JPanel {
     private void pieceForBlack(List<Piece> blackTakenPieces) {
         for (final Piece takenPiece : blackTakenPieces) {
             try {
-                final BufferedImage image = ImageIO.read(new File("/plains/pieces" +
-                        takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()));
+                String imagePath = "/plains/pieces/" +
+                        takenPiece.getPieceAlliance().toString().charAt(0) +
+                        takenPiece + ".gif";
 
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
-                this.southPanel.add(imageLabel);
+                // Use getResource to obtain the resource URL
+                var fileUrl = getClass().getResource(imagePath);
+
+                if (fileUrl != null) {
+                    final BufferedImage image = ImageIO.read(fileUrl);
+                    final ImageIcon icon = new ImageIcon(image);
+                    final JLabel imageLabel = new JLabel(icon);
+                    this.southPanel.add(imageLabel);
+                } else {
+                    System.err.println("Resource not found: " + imagePath);
+                }
             } catch (final IOException e) {
                 e.printStackTrace();
             }

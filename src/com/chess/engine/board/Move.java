@@ -257,11 +257,10 @@ public abstract class Move {
     }
 
     public static class PawnPromotion extends Move {
-
         final Move decoratedMove;
         final Pawn promotedPawn;
 
-        public PawnPromotion(final Move decoratedMove) {
+        public PawnPromotion(final Move decoratedMove) { // using decorate design pattern
             super(decoratedMove.getBoard(), decoratedMove.getMovedPiece(), decoratedMove.getDestinationCoordinate());
             this.decoratedMove = decoratedMove;
             this.promotedPawn = (Pawn) decoratedMove.getMovedPiece();
@@ -276,27 +275,27 @@ public abstract class Move {
         @Override
         public boolean equals(final Object other) {
             return this == other || other instanceof PawnPromotion && (super.equals(other));
-
         }
 
 
-//        @Override
-//        public Board execute() {
-//            final Board pawnMovedBoard = this.decoratedMove.execute();
-//            final Board.Builder builder = new Builder();
-//            for (final Piece piece : pawnMovedBoard.currentPlayer().getActivePieces()) {
-//                if (!this.promotedPawn.equals(piece)) {
-//                    builder.setPiece(piece);
-//                }
-//            }
-//            for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
-//                builder.setPiece(piece);
-//            }
-//            builder.setPiece(this.promotedPawn.getPromotedPiece().movePiece(this));
-//            builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
-//            return builder.build();
-//
-//        }
+        @Override
+        public Board execute() {
+            final Board pawnMovedBoard = this.decoratedMove.execute();
+            final Builder builder = new Builder();
+            for (final Piece piece : pawnMovedBoard.currentPlayer().getActivePieces()) {
+                if (!this.promotedPawn.equals(piece)) {
+                    builder.setPiece(piece);
+                }
+            }
+
+            for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
+                builder.setPiece(piece);
+            }
+            builder.setPiece(this.promotedPawn.getPromotedPiece().movePiece(this));
+            builder.setMoveMaker(pawnMovedBoard.currentPlayer().getAlliance());
+
+            return builder.build();
+        }
 
         @Override
         public boolean isAttack() {
@@ -324,24 +323,25 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Builder builder = new Builder();
+            this.board.currentPlayer().getActivePieces()
+                    .stream().filter(piece -> !this.movedPiece.equals(piece))
+                    .forEach(builder::setPiece);
 
-            for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
-                if (!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-
-            for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece);
-            }
+            this.board.currentPlayer().getOpponent().getActivePieces()
+                    .forEach(builder::setPiece);
 
             final Pawn movedPawn = (Pawn) this.movedPiece.movePiece(this);
-
             builder.setPiece(movedPawn);
             builder.setEnPassantPawn(movedPawn);
-            builder.setMoveMaker(this.board.currentPlayer().getAlliance());
+            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            builder.setMoveTransition(this);
 
             return builder.build();
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            return this == other || other instanceof PawnJump && super.equals(other);
         }
 
         @Override

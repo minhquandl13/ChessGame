@@ -28,8 +28,6 @@ public class Pawn extends Piece {
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        boolean isSecondRow = BoardUtils.SEVENTH_ROW[this.piecePosition];
-        boolean isSeventhRow = BoardUtils.SECOND_ROW[this.piecePosition];
         boolean isFirstColumn = BoardUtils.FIRST_COLUMN[this.piecePosition];
         boolean isEightColumn = BoardUtils.EIGHTH_COLUMN[this.piecePosition];
         boolean isBlack = this.getPieceAlliance().isBlack();
@@ -47,8 +45,11 @@ public class Pawn extends Piece {
             switch (currentCandidateOffset) {
                 case 8 -> {
                     if (!board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-                        // TODO: more work to do here (deal with promotion)!!
-                        legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+                        if (this.pieceAlliance.isPawnPromotion(candidateDestinationCoordinate)) { // (deal with promotion)
+                            legalMoves.add(new PawnPromotion(new PawnMove(board, this, candidateDestinationCoordinate)));
+                        } else {
+                            legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+                        }
                     }
                 }
 
@@ -71,8 +72,11 @@ public class Pawn extends Piece {
                             final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 
                             if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                                // TODO (quan): more to do here's the case attacking into upon promotion
-                                legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                if (this.pieceAlliance.isPawnPromotion(candidateDestinationCoordinate)) { // (deal with promotion)
+                                    legalMoves.add(new PawnPromotion(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                                } else {
+                                    legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                }
                             }
                         } else if (board.getEnPassantPawn() != null) { // if enemy pawn next to your pawn then you can take
                             if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
@@ -92,8 +96,11 @@ public class Pawn extends Piece {
                             final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
 
                             if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                                // TODO(quan): more to do here's the case attacking into upon promotion
-                                legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                if (this.pieceAlliance.isPawnPromotion(candidateDestinationCoordinate)) { // (deal with promotion)
+                                    legalMoves.add(new PawnPromotion(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                                } else {
+                                    legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                                }
                             }
                         } else if (board.getEnPassantPawn() != null) { // if enemy pawn next to your pawn then you can take
                             if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (this.pieceAlliance.getOppositeDirection()))) {
@@ -167,5 +174,9 @@ public class Pawn extends Piece {
     @Override
     public String toString() {
         return PieceType.PAWN.toString();
+    }
+
+    public Piece getPromotedPiece() {
+        return new Queen(this.pieceAlliance, this.piecePosition, false);
     }
 }

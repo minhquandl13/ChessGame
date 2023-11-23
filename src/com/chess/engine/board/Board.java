@@ -86,7 +86,6 @@ public class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-
     private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard,
                                                            final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
