@@ -25,7 +25,6 @@ public class Queen extends Piece {
         super(PieceType.QUEEN, piecePosition, pieceAlliance, isFirstMove);
     }
 
-    // FIXME: diagonal has problem
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();

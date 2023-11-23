@@ -42,7 +42,6 @@ public class Table {
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
-    // FIXME: error link path
     private static final String defaultPieceImagesPath = "/plains/pieces/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
@@ -318,25 +317,6 @@ public class Table {
                 setBorder(BorderFactory.createLineBorder(Color.GRAY));
             }
         }
-
-        // FIXME
-//        private void highlightLegals(final Board board) {
-//            if (Table.get().getHighlightLegalMoves()) {
-//                for (final Move move : pieceLegalMoves(board)) {
-//                    if (move.getDestinationCoordinate() == this.tileId) {
-//                        try {
-//                            var filePath = "/misc/green_dot.png";
-//
-//                            var fileUrl = new URL(URLDecoder.decode(filePath, StandardCharsets.UTF_8));
-//                            final BufferedImage image = ImageIO.read(fileUrl);
-//                            this.add(new JLabel(new ImageIcon(image)));
-//                        } catch (final IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
         private void highlightLegals(final Board board) {
             if (Table.get().getHighlightLegalMoves()) {

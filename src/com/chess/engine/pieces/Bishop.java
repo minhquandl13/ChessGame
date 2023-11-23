@@ -25,7 +25,6 @@ public class Bishop extends Piece {
         super(PieceType.BISHOP, piecePosition, pieceAlliance, isFirstMove);
     }
 
-    // FIXME: diagonal has problem
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
