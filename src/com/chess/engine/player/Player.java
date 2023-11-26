@@ -9,6 +9,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
 
 public abstract class Player {
     protected final Board board;
@@ -19,6 +22,7 @@ public abstract class Player {
     Player(final Board board, final Collection<Move> legalMoves, final Collection<Move> opponentMoves) {
         this.board = board;
         this.playerKing = etablishKing();
+
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(legalMoves, calculateKingCastle(legalMoves, opponentMoves)));
         this.isInCheck = !Player.calculateAttackOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
     }
@@ -31,16 +35,11 @@ public abstract class Player {
         return legalMoves;
     }
 
-    protected static Collection<Move> calculateAttackOnTile(int piecePosition, Collection<Move> opponentMoves) {
-        final List<Move> attackMoves = new ArrayList<>();
-
-        for (final Move move : opponentMoves) {
-            if (piecePosition == move.getDestinationCoordinate()) {
-                attackMoves.add(move);
-            }
-        }
-
-        return ImmutableList.copyOf(attackMoves);
+    static Collection<Move> calculateAttackOnTile(final int tile,
+                                                  final Collection<Move> moves) {
+        return moves.stream()
+                .filter(move -> move.getDestinationCoordinate() == tile)
+                .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
     private King etablishKing() {
@@ -62,11 +61,11 @@ public abstract class Player {
     }
 
     public boolean isInCheckMate() {
-        return this.isInCheck && !hasEscapeMoves();
+        return this.isInCheck && hasEscapeMoves();
     }
 
     public boolean isInStaleMate() {
-        return !this.isInCheck && !hasEscapeMoves();
+        return !this.isInCheck && hasEscapeMoves();
     }
 
     public boolean isCastle() {
@@ -74,15 +73,9 @@ public abstract class Player {
     }
 
     protected boolean hasEscapeMoves() {
-        for (final Move move : this.legalMoves) {
-            final MoveTransition transition = makeMove(move);
-
-            if (transition.getMoveStatus().isDone()) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.legalMoves.stream()
+                .noneMatch(move -> makeMove(move)
+                        .getMoveStatus().isDone());
     }
 
     public MoveTransition makeMove(final Move move) {

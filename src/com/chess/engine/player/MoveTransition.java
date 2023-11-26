@@ -7,6 +7,7 @@ public class MoveTransition {
     private final Board transitionBoard;
     private final Move move;
     private final MoveStatus moveStatus;
+    private final Board toBoard;
 
     public MoveTransition(final Board transitionBoard,
                           final Move move,
@@ -22,6 +23,9 @@ public class MoveTransition {
 
     public Board getTransitionBoard() {
         return this.transitionBoard;
+    }
+    public Board getToBoard() {
+        return this.toBoard;
     }
 }
 

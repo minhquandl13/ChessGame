@@ -7,9 +7,11 @@ import com.chess.engine.player.MoveTransition;
 public class Minimax implements MoveStrategy {
     private final BoardEvaluator boardEvaluator;
     private final int searchDepth;
+    private long boardsEvaluated;
 
     public Minimax(int searchDepth) {
         this.boardEvaluator = new StandardBoardEvaluator();
+        this.boardsEvaluated = 0;
         this.searchDepth = searchDepth;
     }
 
@@ -51,6 +53,11 @@ public class Minimax implements MoveStrategy {
     @Override
     public String toString() {
         return "Minimax";
+    }
+
+    @Override
+    public long getNumBoardsEvaluated() {
+        return this.boardsEvaluated;
     }
 
     // cut down depth tree
