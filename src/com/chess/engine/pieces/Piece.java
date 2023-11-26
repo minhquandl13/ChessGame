@@ -164,6 +164,5 @@ public abstract class Piece {
         public int getPieceValue() {
             return this.pieceValue;
         }
-        public abstract int locationBonus();
     }
 }
