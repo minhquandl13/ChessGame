@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BoardUtils {
+//    INSTANCE;
     public static final boolean[] FIRST_COLUMN = initColumn(0); // the first column in board is true, and all the remain is false
     public static final boolean[] SECOND_COLUMN = initColumn(1); // the second column in board is true, and all the remain is false
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);

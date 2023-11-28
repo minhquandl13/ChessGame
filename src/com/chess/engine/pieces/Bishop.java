@@ -85,13 +85,13 @@ public class Bishop extends Piece {
                 || (candidateOffset == 9));
     }
 
-    private static Map<Integer, Line[]> computeCandidates() {
-        Map<Integer, Line[]> candidates = new HashMap<>();
+    private static Map<Integer, MoveUtils.Line[]> computeCandidates() {
+        Map<Integer, MoveUtils.Line[]> candidates = new HashMap<>();
         for (int position = 0; position < BoardUtils.NUM_TILES; position++) {
-            List<Line> lines = new ArrayList<>();
+            List<MoveUtils.Line> lines = new ArrayList<>();
             for (int offset : CANDIDATE_MOVE_COORDINATE_VECTOR) {
                 int destination = position;
-                Line line = new Line();
+                MoveUtils.Line line = new MoveUtils.Line();
                 while (BoardUtils.isValidTileCoordinate(destination)) {
                     if (isFirstColumnExclusion(destination, offset) ||
                             isEighthColumnExclusion(destination, offset)) {
@@ -107,7 +107,7 @@ public class Bishop extends Piece {
                 }
             }
             if (!lines.isEmpty()) {
-                candidates.put(position, lines.toArray(new Line[0]));
+                candidates.put(position, lines.toArray(new MoveUtils.Line[0]));
             }
         }
         return Collections.unmodifiableMap(candidates);

@@ -33,6 +33,7 @@ public class Table extends Observable {
     private final JFrame gameFrame;
     private final GameHistoryPanel gameHistoryPanel;
     private final TakenPiecesPanel takenPiecesPanel;
+    private final DebugPanel debugPanel;
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
     private final GameSetup gameSetup;
@@ -61,6 +62,7 @@ public class Table extends Observable {
         this.chessBoard = Board.createStandardBoard();
         this.gameHistoryPanel = new GameHistoryPanel();
         this.takenPiecesPanel = new TakenPiecesPanel();
+        this.debugPanel = new DebugPanel();
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new TableGameAIWatcher());
@@ -70,6 +72,7 @@ public class Table extends Observable {
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
+        this.gameFrame.add(debugPanel, BorderLayout.SOUTH);
 
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setLocationRelativeTo(null);
@@ -107,6 +110,10 @@ public class Table extends Observable {
 
     private boolean getHighlightLegalMoves() {
         return this.highlightLegalMove;
+    }
+
+    private DebugPanel getDebugPanel() {
+        return this.debugPanel;
     }
 
     public void show() {
@@ -272,7 +279,7 @@ public class Table extends Observable {
                                 Table.get().moveMadeUpdate(PlayerType.HUMAN);
                             }
                             boardPanel.drawBoard(chessBoard);
-
+                            debugPanel.redo();
                         });
                     }
                 }

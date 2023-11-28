@@ -72,6 +72,14 @@ public abstract class Player {
         return false;
     }
 
+    public boolean isKingSideCastleCapable() {
+        return this.playerKing.isKingSideCastCapable();
+    }
+
+    public boolean isQueenSideCastleCapable() {
+        return this.playerKing.isQueenSideCastCapable();
+    }
+
     protected boolean hasEscapeMoves() {
         return this.legalMoves.stream()
                 .noneMatch(move -> makeMove(move)
