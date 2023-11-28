@@ -131,12 +131,12 @@ public abstract class Move {
         @Override
         public boolean equals(final Object other) {
             var isEqual = this == other || other instanceof MajorMove && super.equals(other);
-            if (isEqual) {
-                System.out.println("Quan co: " + getMovedPiece());
-                System.out.println("Vi tri hien tai: " + this.getCurrentCoordinate());
-                System.out.println("Vi tri den: " + this.getDestinationCoordinate());
-                System.out.println("\n");
-            }
+//            if (isEqual) {
+//                System.out.println("Quan co: " + getMovedPiece());
+//                System.out.println("Vi tri hien tai: " + this.getCurrentCoordinate());
+//                System.out.println("Vi tri den: " + this.getDestinationCoordinate());
+//                System.out.println("\n");
+//            }
 
             return isEqual;
 //            return this == other || other instanceof MajorMove && super.equals(other);

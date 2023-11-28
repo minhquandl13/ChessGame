@@ -431,12 +431,14 @@ public class Table extends Observable {
         @Override
         public void update(final Observable o, final Object arg) {
             if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer())
-                    && Table.get().getGameBoard().currentPlayer().isInCheckMate()
-                    && Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+                    && !Table.get().getGameBoard().currentPlayer().isInCheckMate()
+                    && !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
                 // Create an AI thread
                 // execute ai work
                 final AIThinkTank thinkTank = new AIThinkTank();
-                thinkTank.execute();
+                if (!thinkTank.isCancelled() && !thinkTank.isDone()) {
+                    thinkTank.execute();
+                }
             }
 
             if (Table.get().getGameBoard().currentPlayer().isInCheckMate()) {
@@ -458,19 +460,19 @@ public class Table extends Observable {
     }
 
     private void moveMadeUpdate(final PlayerType playerType) {
+        System.out.println("Move made, player type: " + playerType);
+        System.out.println("Current Player: " + Table.get().getGameBoard().currentPlayer());
         setChanged();
         notifyObservers(playerType);
     }
 
     private static class AIThinkTank extends SwingWorker<Move, String> {
         private AIThinkTank() {
-
         }
 
         @Override
         protected Move doInBackground() throws Exception {
             final MoveStrategy miniMax = new Minimax(4);
-
             final Move bestMove = miniMax.execute(Table.get().getGameBoard());
 
             return bestMove;
@@ -480,6 +482,7 @@ public class Table extends Observable {
         public void done() {
             try {
                 final Move bestMove = get();
+                System.out.println("AI Move: " + bestMove);
 
                 Table.get().updateComputerMove(bestMove);
                 Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());

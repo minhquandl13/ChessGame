@@ -160,7 +160,6 @@ public class Board {
         return builder.build();
     }
 
-    // FIXME: may have bug for legal move
     public Iterable<Move> getAllLegalMove() {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
