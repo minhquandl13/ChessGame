@@ -6,6 +6,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
+import com.chess.engine.player.ai.AlphaBeta;
 import com.chess.engine.player.ai.Minimax;
 import com.chess.engine.player.ai.MoveStrategy;
 import com.google.common.collect.Lists;
@@ -461,7 +462,6 @@ public class Table extends Observable {
 
     private void moveMadeUpdate(final PlayerType playerType) {
         System.out.println("Move made, player type: " + playerType);
-        System.out.println("Current Player: " + Table.get().getGameBoard().currentPlayer());
         setChanged();
         notifyObservers(playerType);
     }
@@ -472,10 +472,13 @@ public class Table extends Observable {
 
         @Override
         protected Move doInBackground() throws Exception {
-            final MoveStrategy miniMax = new Minimax(4);
-            final Move bestMove = miniMax.execute(Table.get().getGameBoard());
+//            final MoveStrategy miniMax = new Minimax(4);
+            final MoveStrategy alphaBeta = new AlphaBeta(4);
+//            final Move bestMoveForMiniMax = miniMax.execute(Table.get().getGameBoard());
+            final Move bestMoveForAlphaBeta = alphaBeta.execute(Table.get().getGameBoard());
 
-            return bestMove;
+//            return bestMoveForMiniMax;
+            return bestMoveForAlphaBeta;
         }
 
         @Override
