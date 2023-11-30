@@ -9,11 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.chess.gui.Table.*;
@@ -22,7 +19,7 @@ public class TakenPiecesPanel extends JPanel {
     private final JPanel northPanel;
     private final JPanel southPanel;
     private static final Color PANEL_COLOR = Color.decode("0xFDFE6");
-    private static final Dimension TAKEN_PIECE_DIMENSION = new Dimension(40, 80);
+    private static final Dimension TAKEN_PIECE_DIMENSION = new Dimension(100, 80);
     private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
 
     public TakenPiecesPanel() {
@@ -54,7 +51,7 @@ public class TakenPiecesPanel extends JPanel {
                 } else if (takenPiece.getPieceAlliance().isBlack()) {
                     blackTakenPieces.add(takenPiece);
                 } else {
-                    throw new RuntimeException("should not reach here!");
+                    throw new RuntimeException("Should not reach here!");
                 }
             }
         }
@@ -69,7 +66,6 @@ public class TakenPiecesPanel extends JPanel {
         validate();
     }
 
-    // FIXME:
     private void pieceForWhite(List<Piece> whiteTakenPieces) {
         for (final Piece takenPiece : whiteTakenPieces) {
             try {

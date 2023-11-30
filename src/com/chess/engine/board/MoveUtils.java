@@ -11,16 +11,6 @@ public enum MoveUtils {
 
     public static final Move NULL_MOVE = new NullMove();
 
-//    public static int exchangeScore(final Move move) {
-//        if(move == MoveFactory.getNullMove()) {
-//            return 1;
-//        }
-//        return move.isAttack() ?
-//                5 * exchangeScore(move.getBoard().getTransitionMove()) :
-//                exchangeScore(move.getBoard().getTransitionMove());
-//
-//    }
-
     public static class Line {
         private final List<Integer> coordinates;
 

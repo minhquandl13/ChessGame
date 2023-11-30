@@ -33,7 +33,7 @@ public class Table extends Observable {
     private final JFrame gameFrame;
     private final GameHistoryPanel gameHistoryPanel;
     private final TakenPiecesPanel takenPiecesPanel;
-    private final DebugPanel debugPanel;
+//    private final DebugPanel debugPanel;
     private final BoardPanel boardPanel;
     private final MoveLog moveLog;
     private final GameSetup gameSetup;
@@ -44,7 +44,7 @@ public class Table extends Observable {
     private BoardDirection boardDirection;
     private Move computerMove;
     private boolean highlightLegalMove;
-    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
+    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(700, 700);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
@@ -62,7 +62,7 @@ public class Table extends Observable {
         this.chessBoard = Board.createStandardBoard();
         this.gameHistoryPanel = new GameHistoryPanel();
         this.takenPiecesPanel = new TakenPiecesPanel();
-        this.debugPanel = new DebugPanel();
+//        this.debugPanel = new DebugPanel();
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new TableGameAIWatcher());
@@ -72,7 +72,7 @@ public class Table extends Observable {
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
-        this.gameFrame.add(debugPanel, BorderLayout.SOUTH);
+//        this.gameFrame.add(debugPanel, BorderLayout.SOUTH);
 
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setLocationRelativeTo(null);
@@ -112,9 +112,9 @@ public class Table extends Observable {
         return this.highlightLegalMove;
     }
 
-    private DebugPanel getDebugPanel() {
-        return this.debugPanel;
-    }
+//    private DebugPanel getDebugPanel() {
+//        return this.debugPanel;
+//    }
 
     public void show() {
         invokeLater(() -> {
@@ -131,15 +131,6 @@ public class Table extends Observable {
         tabMenuBar.add(createOptionsMenu());
 
         return tabMenuBar;
-    }
-
-    private static void center(final JFrame frame) {
-        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        final int w = frame.getSize().width;
-        final int h = frame.getSize().height;
-        final int x = (dim.width - w) / 2;
-        final int y = (dim.height - h) / 2;
-        frame.setLocation(x, y);
     }
 
     private JMenu createFileMenu() {
@@ -279,7 +270,7 @@ public class Table extends Observable {
                                 Table.get().moveMadeUpdate(PlayerType.HUMAN);
                             }
                             boardPanel.drawBoard(chessBoard);
-                            debugPanel.redo();
+//                            debugPanel.redo();
                         });
                     }
                 }
@@ -385,6 +376,7 @@ public class Table extends Observable {
             return Collections.emptyList();
         }
 
+        // set background for board
         private void assignTileColour() {
             if (BoardUtils.EIGHTH_RANK[this.tileId]
                     || BoardUtils.SIXTH_RANK[this.tileId]
@@ -430,6 +422,7 @@ public class Table extends Observable {
         return optionsMenu;
     }
 
+    // notify that which turn to play (white or black turn)
     private void setupUpdate(final GameSetup gameSetup) {
         setChanged();
         notifyObservers(gameSetup);
@@ -478,9 +471,9 @@ public class Table extends Observable {
         }
 
         @Override
-        protected Move doInBackground() throws Exception {
+        protected Move doInBackground() {
 //            final MoveStrategy miniMax = new Minimax(4);
-            final MoveStrategy alphaBeta = new AlphaBeta(4);
+            final MoveStrategy alphaBeta = new AlphaBeta(5);
 //            final Move bestMoveForMiniMax = miniMax.execute(Table.get().getGameBoard());
             final Move bestMoveForAlphaBeta = alphaBeta.execute(Table.get().getGameBoard());
 
@@ -492,8 +485,6 @@ public class Table extends Observable {
         public void done() {
             try {
                 final Move bestMove = get();
-                System.out.println("AI Move: " + bestMove);
-
                 Table.get().updateComputerMove(bestMove);
                 Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
                 Table.get().getMoveLog().addMove(bestMove);

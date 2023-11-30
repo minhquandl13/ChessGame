@@ -88,6 +88,11 @@ public abstract class Piece {
             public boolean isRook() {
                 return false;
             }
+
+            @Override
+            public boolean isQueen() {
+                return false;
+            }
         },
         KNIGHT("N", 300) {
             @Override
@@ -97,6 +102,11 @@ public abstract class Piece {
 
             @Override
             public boolean isRook() {
+                return false;
+            }
+
+            @Override
+            public boolean isQueen() {
                 return false;
             }
         },
@@ -110,6 +120,11 @@ public abstract class Piece {
             public boolean isRook() {
                 return false;
             }
+
+            @Override
+            public boolean isQueen() {
+                return false;
+            }
         },
         ROOK("R", 500) {
             @Override
@@ -120,6 +135,11 @@ public abstract class Piece {
             @Override
             public boolean isRook() {
                 return true;
+            }
+
+            @Override
+            public boolean isQueen() {
+                return false;
             }
         },
         QUEEN("Q", 1000) {
@@ -132,6 +152,11 @@ public abstract class Piece {
             public boolean isRook() {
                 return false;
             }
+
+            @Override
+            public boolean isQueen() {
+                return true;
+            }
         },
         KING("K", 10000) {
             @Override
@@ -141,6 +166,11 @@ public abstract class Piece {
 
             @Override
             public boolean isRook() {
+                return false;
+            }
+
+            @Override
+            public boolean isQueen() {
                 return false;
             }
         };
@@ -160,6 +190,8 @@ public abstract class Piece {
         public abstract boolean isKing();
 
         public abstract boolean isRook();
+
+        public abstract boolean isQueen();
 
         public int getPieceValue() {
             return this.pieceValue;
