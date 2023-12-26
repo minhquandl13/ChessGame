@@ -69,7 +69,7 @@ public class GameHistoryPanel extends JPanel {
     }
 
     private static class DataModel extends DefaultTableModel {
-        private List<Row> values;
+        private final List<Row> values;
         private static final String[] NAMES = {"White", "Black"};
 
         DataModel() {
@@ -141,6 +141,8 @@ public class GameHistoryPanel extends JPanel {
         public String getColumnName(final int column) {
             return NAMES[column];
         }
+
+
     }
 
     private static class Row {

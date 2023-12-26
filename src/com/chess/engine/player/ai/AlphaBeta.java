@@ -33,10 +33,10 @@ public class AlphaBeta implements MoveStrategy {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentValue = board.currentPlayer().getAlliance().isWhite()
-                        ? alphaBeta.min(moveTransition.getTransitionBoard(), this.searchDepth - 1
-                        , Integer.MIN_VALUE, Integer.MAX_VALUE)
-                        : alphaBeta.max(moveTransition.getTransitionBoard(), this.searchDepth - 1
-                        , Integer.MIN_VALUE, Integer.MAX_VALUE);
+                        ? alphaBeta.min(moveTransition.getTransitionBoard(), this.searchDepth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE)
+                        : alphaBeta.max(moveTransition.getTransitionBoard(), this.searchDepth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                System.out.println(move + ": " + currentValue);
 
                 if (board.currentPlayer().getAlliance().isWhite() && (currentValue >= highestSeenValue)) {
                     highestSeenValue = currentValue;
@@ -45,24 +45,18 @@ public class AlphaBeta implements MoveStrategy {
                     lowestSeenValue = currentValue;
                     bestMove = move;
                 }
+
+                final long executionTime = System.currentTimeMillis() - startTime;
+                System.out.println("Execution Time: " + executionTime);
             }
         }
-
-        final long executionTime = System.currentTimeMillis() - startTime;
-        System.out.println("Execution Time: " + executionTime);
 
         return bestMove;
     }
 
-
     @Override
     public String toString() {
-        return "Minimax";
-    }
-
-    @Override
-    public long getNumBoardsEvaluated() {
-        return this.boardsEvaluated;
+        return "Alpha-beta";
     }
 
     // cut down depth tree

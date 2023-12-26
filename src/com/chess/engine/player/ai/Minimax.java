@@ -54,12 +54,6 @@ public class Minimax implements MoveStrategy {
     public String toString() {
         return "Minimax";
     }
-
-    @Override
-    public long getNumBoardsEvaluated() {
-        return this.boardsEvaluated;
-    }
-
     // cut down depth tree
     boolean isEndGameScenario(final Board board) {
         return board.currentPlayer().isInCheckMate()

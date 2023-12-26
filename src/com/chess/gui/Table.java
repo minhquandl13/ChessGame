@@ -44,7 +44,8 @@ public class Table extends Observable {
     private BoardDirection boardDirection;
     private Move computerMove;
     private boolean highlightLegalMove;
-    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(700, 700);
+    private static boolean printedEvaluation = false;
+    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(750, 700);
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private static final Table INSTANCE = new Table();
@@ -110,6 +111,14 @@ public class Table extends Observable {
 
     private boolean getHighlightLegalMoves() {
         return this.highlightLegalMove;
+    }
+
+    public static boolean hasPrintedEvaluation() {
+        return printedEvaluation;
+    }
+
+    public static void setPrintedEvaluation(boolean printed) {
+        printedEvaluation = printed;
     }
 
 //    private DebugPanel getDebugPanel() {
@@ -248,9 +257,6 @@ public class Table extends Observable {
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
 
                             if (transition.getMoveStatus().isDone()) {
-                                System.out.println("\n\n\nBefore board:");
-                                System.out.println(chessBoard);
-
                                 chessBoard = transition.getTransitionBoard();
 
                                 System.out.println("\nAfter board:");
@@ -470,10 +476,11 @@ public class Table extends Observable {
         private AIThinkTank() {
         }
 
+        // TODO: minimax and alpha-beta
         @Override
         protected Move doInBackground() {
 //            final MoveStrategy miniMax = new Minimax(4);
-            final MoveStrategy alphaBeta = new AlphaBeta(5);
+            final MoveStrategy alphaBeta = new AlphaBeta(2);
 //            final Move bestMoveForMiniMax = miniMax.execute(Table.get().getGameBoard());
             final Move bestMoveForAlphaBeta = alphaBeta.execute(Table.get().getGameBoard());
 

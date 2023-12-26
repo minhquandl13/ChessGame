@@ -5,7 +5,6 @@ import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
 
 public final class StandardBoardEvaluator implements BoardEvaluator {
-
     private static final int CHECK_BONUS = 50;
     private static final int CHECK_MATE_BONUS = 10_000;
     private static final int DEPTH_BONUS = 100;
@@ -16,12 +15,28 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         // get the score from white and subtract it from the score from black
         // if white has an advantage score that get back will be a positive number(+)
         // if black has an advantage score that get back will be a negative number(-)
-        return scorePlayer(board, board.whitePlayer(), depth
-                - scorePlayer(board, board.blackPlayer(), depth));
+
+        int whitePoints = calculateTotalPoints(board.whitePlayer());
+        int blackPoints = calculateTotalPoints(board.blackPlayer());
+
+        int evaluation = scorePlayer(board.whitePlayer(), whitePoints, depth)
+                - scorePlayer(board.blackPlayer(), blackPoints, depth);
+
+        // Print the result just once
+        if (depth == 0) {
+            System.out.println("WHITE - Total Points: " + whitePoints);
+            System.out.println("WHITE - Total Number of Pieces: " + board.whitePlayer().getActivePieces().size());
+            System.out.println("-----");
+            System.out.println("BLACK - Total Points: " + blackPoints);
+            System.out.println("BLACK - Total Number of Pieces: " + board.blackPlayer().getActivePieces().size());
+        }
+
+        return evaluation;
     }
 
-    private int scorePlayer(final Board board, final Player player, final int depth) {
-        return pieceValue(player)
+    private int scorePlayer(final Player player, int totalPoints, final int depth) {
+        return totalPoints
+                + pieceValue(player)
                 + mobility(player)
                 + check(player)
                 + checkMate(player, depth)
@@ -41,7 +56,6 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         return depth == 0 ? 1 : DEPTH_BONUS * depth;
     }
 
-
     private static int check(final Player player) {
         return player.getOpponent().isInCheck() ? CHECK_BONUS : 0;
     }
@@ -59,5 +73,15 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         }
 
         return pieceValueScore;
+    }
+
+    private static int calculateTotalPoints(Player player) {
+        int totalPoints = 0;
+
+        for (final Piece piece : player.getActivePieces()) {
+            totalPoints += piece.getPieceValue();
+        }
+
+        return totalPoints;
     }
 }
